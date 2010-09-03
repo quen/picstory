@@ -1,0 +1,292 @@
+leafdigital picstory
+--------------------
+
+http://www.leafdigital.com/software/picstory/
+
+leafdigital picstory is a Java web application that serves picture stories.
+A picture story is a way to display your photographs along with text. 
+
+You create one or more picture stories to serve with this software. Each
+picture story is a subfolder inside a single story root folder. The subfolder
+contains the story text XML file index.xml, and a number of .jpg files with
+the pictures for the story.
+
+
+Requirements
+------------
+
+You must have a Java application server, such as Apache Tomcat, installed
+and working.
+
+
+Installation
+------------
+
+The web application is contained inside this package in the folder 'picstory'.
+To install, copy this folder into your application server's root application
+folder.
+
+The folder CACHE within the application folder must be writable by the
+application server user, so check the file ownership and permissions. For
+example, if your application server user is in a group called 'tomcat', you
+might want to run commands like the following, which assume you're inside
+the web application folder:
+
+sudo chown :tomcat CACHE
+chmod g+rwx CACHE
+
+(Commands differ on different operating systems; consult suitable reference
+sources. The above commands work on OS X.)
+
+If you want to test the application, you can now visit its main page.
+You should see an index page without any picture stories listed.
+
+That's all that is required, but you might want to make the following
+configuration changes.
+
+
+Configuration
+-------------
+
+All configuration options are set in the WEB-INF/web.xml file within the
+application. The options are documented in that file, but here are the ones
+you probably want to change.
+
+* site-name (plain text)
+
+Set this to the name of your site. The default is 'Picstory'. For example,
+you could set it to 'My photos'.
+
+* index-intro (escaped XHTML)
+
+This XHTML content appears on the index page above the list of available
+picture stories. Because it is being stored within another XML file, you
+need to escape it; the < symbol must be &lt; and the & symbol must be &amp;.
+
+The content should usually be one or more paragraphs.
+
+For example, if you want the content to be:
+
+<p>Here are my pictures.</p>
+
+You would need to set this value as follows:
+
+<param-value>&lt;p>Here are my pictures.&lt;/p></param-value>
+
+Be careful when modifying these values; the content must be valid XHTML
+(for example, every <p> tag must have a matching </p> tag). If it isn't,
+browsers will refuse to display pages.
+
+* index-final (escaped XHTML)
+
+This XHTML content appears on the index page below the list of available
+picture stories. You can use it to include a copyright message.
+
+* story-final (escaped XHTML)
+
+This XHTML content appears at the bottom of each story page. You can use
+it to include a copyright message.
+
+* story-folder (disk folder)
+
+Specifies the folder where you want to put your story folders. You can give
+any path on disk. The default is '.' meaning that your story folders will
+be placed inside the web application folder.
+
+* Other options
+
+You can also specify other folder options, but the defaults will probably 
+be okay.
+
+
+How to create a story
+---------------------
+
+* Create story folder
+
+Create a new folder inside your story folder. The folder must have a name
+that consists of only the following characters:
+
+a-z 0-9 - _
+
+(For example, upper-case letters are not permitted; nor are spaces.)
+
+* Create pictures
+
+Save the JPEG files for your story into the same folder. Each file must have
+a name ending in '.jpg'; before that extension, it may contain only the
+following characters:
+
+a-z A-Z 0-9 - _
+
+If you want to reduce the files in size, you should set them to have width up
+to 800 pixels and height up to 600 pixels. You can use the original size if
+you like, because picstory will automatically create the required sizes.
+
+If available, picstory will use the following EXIF metadata in the files:
+
+- original date (not displayed anywhere with default xsl)
+- GPS location (will be used to create a link to Google Maps)
+- aperture, shutter speed, focal length, and ISO (displayed)
+
+* Create story
+
+Once you have all your pictures, you need to create a file called index.xml
+which gives the text that fits around the pictures. The following example
+demonstrates a typical file.
+
+
+<picstory date="2010-05-29">
+  <title>Grand Union: Blisworth to Weedon</title>
+  <description>
+    <p>
+      A walk along the Grand Union Canal from Blisworth to Weedon.
+    </p>
+  </description>
+  <story>
+    <subhead>Introduction</subhead>
+    <p>
+      We got off the bus in (well, near) Blisworth and walked to the canal
+      and along it to the canal junction, where this time we took the
+      main route northward.
+    </p>
+    <pic src="img-9607">
+      Impressive railway bridge where we got off the bus on Station Road 
+      (this is the main line, but there's no station any more).
+    </pic>
+    <pic src="img-9615" indexpic="y">
+      Wood chained up near the canal junction.
+    </pic>
+  </story>
+</picstory>
+
+
+Notes about the XML format:
+
+- The date is optional, but recommended. If specified, it must be in ISO 
+  YYYY-MM-DD format.
+- The title and description both appear on the index page.
+- The picture src= is the name of the JPEG file, but without the '.jpg'
+- Specify indexpic="y" against the picture you would like to display on
+  the index page. If you don't use this, it will use the first picture.
+- You cannot use all XHTML tags in this file. All text should be within
+  <p> tags. Other than that, only the following are available:
+  <em>word</em> - emphasis
+  <a href="http://www.example.com/">text</a> - link
+- These files are in UTF-8 character encoding, so you can include special
+  characters if you like.
+  
+
+Using the application
+---------------------
+
+* Main page
+
+http://www.example.com/picstory/
+
+If you visit the application's main page, it will show a list of all
+available stories.
+
+- The list will be updated automatically if you have added or changed any
+  story file (index.xml). It is cached for one minute, so if you look at
+  the list, then immediately make a change to a story file, you might need
+  to wait before it updates.
+- You can force an update by adding ?reload to the end of the URL. This
+  also reloads all the templates, CSS, JavaScript and XSL files.
+  
+* Story page
+
+http://www.example.com/picstory/storyname/
+
+This page shows the story. All pictures are displayed in a suitable size so
+that they fit in the browser window (try resizing your browser to see how it
+works). For example, if you load the page in a mobile browser, smaller-size
+versions of the image files will automatically be loaded.
+
+- The page will be updated automatically if you change the story file
+  (index.xml).
+- You can also force an update by adding ?reload as above (useful if you
+  changed a template).
+
+
+Troubleshooting
+---------------
+
+The easiest way to cause a problem is by writing an invalid XML file. If
+the program doesn't already make it clear, you can often spot problems in
+XML files by opening them in a Web browser; this will give an error if
+the file is not well-formed.
+
+Other errors might be visible in the web application's logs. I was lazy,
+so picstory just writes errors to standard error; Tomcat puts this in
+a file called catalina.out, so look at the end of this file if you're
+experiencing an inexplicable problem.
+
+If you change image files, the system won't notice the new files unless you
+also make a change to the index.xml story file.
+
+If you put a new story folder in and it doesn't notice it, make an edit to
+the index.xml file.
+
+Use the ?reload parameter if necessary to update changes.
+
+If you want it to reload *all* the story files, delete the entire contents
+of the CACHE folder (leaving the folder itself), then restart the web
+application, then visit the main page. Regenerating the entire cache can
+take a long time (several minutes) if you have many stories, but you'll
+see a progress display.
+
+
+Customisation
+-------------
+
+You can customise the display by editing files in the RESOURCE and TEMPLATE
+folders. In order to see the changes, use the ?reload parameter as mentioned
+above.
+
+These files are in CSS, JavaScript, XSL, and XHTML formats. They should be
+self-explanatory, although you will probably need a high degree of expertise
+in order to make significant modifications.
+
+
+Copyright
+---------
+
+leafdigital picstory is released under GNU General Public License v3 (see
+LICENSE). All code and other content is copyright 2010 Samuel Marshall.
+
+This program uses the Apache Software Foundation's Sanselan library, which
+is used under the ASF (Apache) License. http://incubator.apache.org/sanselan/
+
+
+Donations
+---------
+
+leafdigital picstory is free to use, but you could think of it as buskware. 
+If you'd like to leave a tip, please do :) I'd suggest $10 / 10 euro or so, 
+more if you're rich! See the website:
+
+http://www.leafdigital.com/software/picstory/
+
+(Note: this is not a charity! I have a day job and am far from starving,
+just as many buskers are well-off. But it's a dream of mine to become
+financially independent just through making the software I like, so I like to
+leave the door open. Who knows? Maybe at some point I'll get enough donations
+from everything combined to actually quit the day job and spend all my time
+on this stuff.)
+
+
+Contributions
+-------------
+
+If you want to contribute an improvement, make a patch file and send it to
+me with the following note:
+
+<<
+I, (your name) currently own the copyright in the attached contribution, and
+I now assigning that copyright to Samuel Marshall.
+>>
+
+If used, your contribution will be released as open source, but ensuring that
+I own all the copyright makes life easier should there need to be any
+additional licensing in future.

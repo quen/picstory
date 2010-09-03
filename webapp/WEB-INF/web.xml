@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>Picstory</display-name>
+  <description>
+     Displays 'picture stories' (text with photos).
+  </description>
+  
+	<servlet>
+	  <description>
+ 	 	  Servlet handles all requests.
+ 	 	</description>
+    <servlet-name>main</servlet-name>
+ 		<servlet-class>com.leafdigital.picstory.MainServlet</servlet-class>
+ 		<init-param>
+ 		  <description>Used as site name in browser title and other 
+ 		    places</description>
+ 		  <param-name>site-name</param-name>
+ 		  <param-value>Picstory</param-value>
+ 		</init-param>
+ 		<init-param>
+ 			<description>Introductory text above stories on index (XHTML)</description>
+ 			<param-name>index-intro</param-name>
+ 			<param-value>&lt;p>Picture stories are shown in reverse date order. Click 
+ 				a title to view that story.&lt;/p></param-value>
+ 		</init-param>
+ 		<init-param>
+ 			<description>Closing text below stories on index (XHTML)</description>
+ 			<param-name>index-final</param-name>
+ 			<param-value>&lt;p>All images &amp;copy; by the photographer. All rights reserved.&lt;/p></param-value>
+ 		</init-param>
+ 		<init-param>
+ 			<description>Closing text on story page (XHTML)</description>
+ 			<param-name>story-final</param-name>
+ 			<param-value>&lt;p>All images &amp;copy; by the photographer. All rights reserved.&lt;/p></param-value>
+ 		</init-param>
+ 		<init-param>
+ 		  <description>Folder where story folders are stored. Use absolute path or one
+ 		    relative to the web application's root</description>
+ 		  <param-name>story-folder</param-name>
+ 		  <param-value>.</param-value>
+ 		</init-param>
+ 		<init-param>
+ 		  <description>Folder where cached files are stored. Use absolute path or one
+ 		    relative to the web application's root</description>
+ 		  <param-name>cache-folder</param-name>
+ 		  <param-value>CACHE</param-value>
+ 		</init-param>
+ 		<init-param>
+ 		  <description>Folder where template files are stored. Use absolute path or one
+ 		    relative to the web application's root</description>
+ 		  <param-name>template-folder</param-name>
+ 		  <param-value>TEMPLATE</param-value>
+ 		</init-param>
+ 		<init-param>
+ 		  <description>Folder where resource files are stored. Use absolute path or one
+ 		    relative to the web application's root</description>
+ 		  <param-name>resource-folder</param-name>
+ 		  <param-value>RESOURCE</param-value>
+ 		</init-param>
+	</servlet>  
+
+	<servlet-mapping>
+    <servlet-name>main</servlet-name>
+    <url-pattern>/*</url-pattern>	
+	</servlet-mapping>
+  
+</web-app>

@@ -1,0 +1,131 @@
+<project name="picstory" default="dist" basedir=".">
+	
+	<description>
+	   Builds picstory.
+	</description>
+	
+	<property name="version" value="2.0"/>
+	
+	<!-- Temporary build folder (will be created/erased) -->
+  <property name="build" location="${java.io.tmpdir}/picstory.build"/>
+	
+	<!-- Developer build target (must specify) -->
+	<property name="target" location=""/>
+	
+	<!-- Distribution zipfile target folder -->
+	<property name="distfolder" location="${user.home}/Desktop"/>
+	
+  <!-- Clear and create the build directory used by compile -->
+  <target name="init">
+    <delete dir="${build}"/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/classes"/>
+  </target>
+
+	<!-- Compile Java source and copy data into the classes folder -->
+  <target name="compile" depends="init">
+    <javac srcdir="src" destdir="${build}/classes" source="1.6" target="1.6" debug="true" encoding="UTF-8">
+     	<classpath>
+	      <fileset dir="lib">
+	        <include name="**/*.jar"/>
+	      </fileset>	   
+	      <fileset dir="internallib">
+	        <include name="**/*.jar"/>
+	      </fileset>	   
+     	</classpath>    	
+    </javac>
+	  <copy todir="${build}/classes">
+			<fileset dir="src">
+				<exclude name="**/*.java"/>
+				<exclude name="**/package.html"/>
+	  	</fileset>
+		</copy>
+  </target>
+	
+	<!-- Build main picstory.jar file -->
+	<target name="jar" depends="compile">
+    <mkdir dir="${build}/lib"/>
+    <jar jarfile="${build}/lib/picstory.jar">
+  		<fileset dir="${build}/classes">
+  			<include name="com/leafdigital/**"/>
+    	</fileset>
+		</jar>
+	</target>
+	
+	<!-- Build webapp folder -->
+  <target name="webapp" depends="jar">
+  	
+		<!-- Make target folder if it doesn't exist -->
+    <mkdir dir="${build}/webapp"/>
+  
+		<!-- Copy webapp folder and main jar -->
+	  <copy todir="${build}/webapp">
+	    <fileset dir="webapp"/>
+		</copy>
+	  <mkdir dir="${build}/webapp/WEB-INF/lib"/>
+	  <copy todir="${build}/webapp/WEB-INF/lib">
+  		<fileset dir="${build}/lib">
+  			<include name="*.jar"/>
+  		</fileset>
+  	</copy>
+	  <copy todir="${build}/webapp/WEB-INF/lib">
+  		<fileset dir="lib">
+  			<include name="*.jar"/>
+	  	</fileset>
+  	</copy>
+  	
+		<!-- Copy static folders -->
+	  <copy todir="${build}/webapp/TEMPLATE">
+	    <fileset dir="template"/>
+		</copy>
+	  <copy todir="${build}/webapp/RESOURCE">
+	    <fileset dir="resource"/>
+		</copy>
+  	<mkdir dir="${build}/webapp/CACHE"/>
+  	
+  </target>
+	
+	<target name="replace" depends="webapp">
+		
+	</target>
+	
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+	
+	<target name="dist" depends="webapp" description="Build distribution zip">
+		<!-- Delete old zip file -->
+		<delete file="${distfolder}/picstory.${version}.zip"/>
+		
+		<!-- Make distribution folder -->
+		<mkdir dir="${build}/dist"/>
+		<copy todir="${build}/dist/picstory">
+			<fileset dir="${build}/webapp"/>
+		</copy>	
+		<copy file="./LICENSE" todir="${build}/dist"/>
+		<copy file="./DIST.README" tofile="${build}/dist/README"/>
+		
+		<!-- Zip it -->
+		<zip destfile="${distfolder}/picstory.${version}.zip"
+			basedir="${build}/dist" level="9" />
+		
+	</target>
+	
+	<target name="devbuild" description="Build and install into target">
+
+		<!-- Move the old folder out of the way -->
+		<move file="${target}" todir="${build}/old" failonerror="false"/>
+		
+		<!-- Move the new folder into place -->
+		<move todir="${target}">
+			<fileset dir="${build}/webapp">
+				<include name="**"/>
+			</fileset>
+		</move>
+		
+		<!-- Set permissions on the cache folder -->
+  	<chmod dir="${target}/CACHE" type="dir" perm="g+rw"/>
+		
+	</target>
+
+</project>

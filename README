@@ -1,0 +1,49 @@
+leafdigital picstory
+--------------------
+
+http://www.leafdigital.com/software/picstory/
+
+leafdigital picstory is a Java web application that serves picture stories.
+A picture story is a way to display your photographs along with text. 
+
+You create one or more picture stories to serve with this software. Each
+picture story is a subfolder inside a single story root folder. The subfolder
+contains the story text XML file index.xml, and a number of .jpg files with
+the pictures for the story.
+
+
+Download information
+--------------------
+
+If you just want to download this program, go to the Downloads page and
+download the latest zip file. There's another README inside that with
+full instructions.
+
+
+Repository information
+----------------------
+
+To build from the repository, run ant on the build.xml script. This will
+create the distribution zip file on your desktop.
+
+See build.xml for other options.
+
+README.DIST is the documentation that goes into the zip file; if you want
+to know more about the program, start with that.
+
+
+Copyright
+---------
+
+leafdigital picstory is released under GNU General Public License v3 (see
+LICENSE). All code and other content is copyright 2010 Samuel Marshall,
+except as follows.
+
+Includes the Apache Software Foundation's Sanselan library, which
+is used under the ASF (Apache) License. http://incubator.apache.org/sanselan/
+
+Includes servlet-api.jar from Apache Tomcat, available under the Apache
+license version 2. http://tomcat.apache.org/
+(You can replace this with any other servlet-api.jar if you prefer;
+it's only included in the repository for ease of building, and is not in
+the distribution.)
