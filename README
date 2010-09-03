@@ -28,7 +28,7 @@ create the distribution zip file on your desktop.
 
 See build.xml for other options.
 
-README.DIST is the documentation that goes into the zip file; if you want
+DIST.README is the documentation that goes into the zip file; if you want
 to know more about the program, start with that.
 
 
