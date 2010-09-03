@@ -47,3 +47,19 @@ license version 2. http://tomcat.apache.org/
 (You can replace this with any other servlet-api.jar if you prefer;
 it's only included in the repository for ease of building, and is not in
 the distribution.)
+
+
+Contributions
+-------------
+
+If you want to contribute an improvement, make a patch file and send it to
+me with the following note:
+
+<<
+I, (your name) currently own the copyright in the attached contribution, and
+I now assigning that copyright to Samuel Marshall.
+>>
+
+If used, your contribution will be released as open source, but ensuring that
+I own all the copyright makes life easier should there need to be any
+additional licensing in future.
