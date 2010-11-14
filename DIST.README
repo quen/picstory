@@ -175,7 +175,12 @@ Notes about the XML format:
   <a href="http://www.example.com/">text</a> - link
 - These files are in UTF-8 character encoding, so you can include special
   characters if you like.
-  
+
+As of version 2.01, the system will automatically generate a suitable
+index.xml file if you visit the URL /storyname/basicxml - you can save this
+file and edit it to add your own text as needed.
+
+
 
 Using the application
 ---------------------
