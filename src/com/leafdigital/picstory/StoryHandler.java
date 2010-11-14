@@ -77,7 +77,7 @@ public class StoryHandler extends RequestHandler
 	}
 
 	/**
-	 * @param r Resource name
+	 * @param r Request
 	 * @param storyName Story name
 	 * @throws UserException Error processing story
 	 * @throws IOException Any I/O error
@@ -90,6 +90,64 @@ public class StoryHandler extends RequestHandler
 
 		// Output story
 		getMainServlet().sendPage(r, "story", story.getTitle(), story.getContent());
+	}
+
+	/**
+	 * Call to return the initial xml that can be used to construct a story file.
+	 * @param r Request
+	 * @param storyName Storry name
+	 * @throws UserException Story folder doesn't exist
+	 * @throws IOException Any I/O error
+	 */
+	public void getBasicXml(Request r, String storyName) throws UserException, IOException
+	{
+		// Get folder
+		File folder = new File(storyRoot, storyName);
+		if(!folder.exists())
+		{
+			throw new UserException(HttpServletResponse.SC_NOT_FOUND,
+				"Story folder '" + Util.esc(storyName) + "' not found");
+		}
+
+		// List images in folder
+		File[] files = folder.listFiles(new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String name)
+			{
+				return name.endsWith(".jpg");
+			}
+		});
+		if(files == null)
+		{
+			files = new File[0];
+		}
+
+		// Create index file that contains all these
+	  StringBuilder out = new StringBuilder();
+	  out.append("<picstory date=\"2100-01-01\">\n"
+  		+ "\t<title>Title</title>\n"
+  		+ "\t<description>\n"
+  		+ "\t\t<p>Description</p>\n"
+  		+ "\t</description>\n"
+  		+ "\t<story>\n"
+  		+ "\t\t<subhead>Under construction</subhead>\n"
+  		+ "\t\t<p>This story's under construction. Please come back later.</p>\n");
+	  boolean first = true;
+		for(File file : files)
+		{
+			out.append("\t\t<pic src=\"" + file.getName().replaceFirst("\\.jpg$", "")
+				+ "\"" + (first ? " indexpic=\"y\"" : "") + ">\n"
+				+ "\t\t\t\n"
+				+	"\t\t</pic>\n");
+			first = false;
+		}
+		out.append("\t</story>\n</picstory>\n");
+
+		// Send as download file
+		r.getResponse().addHeader("Content-Disposition",
+			"attachment; filename=index.xml");
+		r.outputText(HttpServletResponse.SC_OK, "text/xml", out.toString());
 	}
 
 	/**

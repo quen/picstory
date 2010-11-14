@@ -54,6 +54,8 @@ public class MainServlet extends HttpServlet
 	private final static Pattern REGEX_PIC = Pattern.compile(
 		"/(" + REGEX_PART_LCNAME + ")/(" + REGEX_PART_NAME
 		+ ")\\.(" + REGEX_PART_HASH + ")\\.(" + REGEX_PART_LCNAME + ")\\.jpg");
+	private final static Pattern REGEX_STORY_BASIC_XML = Pattern.compile(
+		"/(" + REGEX_PART_LCNAME + ")/basicxml");
 
 	private ResourceHandler resource;
 	private StoryHandler story;
@@ -246,6 +248,13 @@ public class MainServlet extends HttpServlet
 				if(m.matches())
 				{
 					resource.get(r, m.group(1), m.group(2), m.group(3));
+					return;
+				}
+
+				m = REGEX_STORY_BASIC_XML.matcher(path);
+				if(m.matches())
+				{
+					story.getBasicXml(r, m.group(1));
 					return;
 				}
 
