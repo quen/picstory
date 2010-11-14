@@ -194,8 +194,9 @@ class Story
 
 			Pic pic = new Pic(picFileName, hash, imageBytes.length,
 				image.getWidth(), image.getHeight());
-			if(pic.isIndexPic())
+			if("y".equals(picEl.getAttribute("indexpic")))
 			{
+				pic.markIndexPic();
 				indexPic = pic;
 			}
 			picList.add(pic);
