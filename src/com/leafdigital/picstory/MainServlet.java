@@ -233,10 +233,14 @@ public class MainServlet extends HttpServlet
 					resource.reload();
 				}
 
+				// Annoyingly, path info is "/" even if you request the page without a /
+				// on the end; handle both normal behaviour and this weird behaviour
 				String path = request.getPathInfo();
-				if(path == null)
+				if(path == null || path.equals("") ||
+					(path.equals("/") && !request.getRequestURI().endsWith("/")))
 				{
-					path = "/";
+					r.redirect(request.getRequestURI() + "/");
+					return;
 				}
 
 				if(path.equals("/"))
@@ -262,6 +266,7 @@ public class MainServlet extends HttpServlet
 				if(m.matches())
 				{
 					r.redirect(m.group(1) + "/");
+					return;
 				}
 
 				m = REGEX_STORY.matcher(path);
