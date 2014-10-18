@@ -112,7 +112,7 @@ public class MainServlet extends HttpServlet
 		}
 		else
 		{
-			result = new File(getServletContext().getRealPath(param));
+			result = new File(getServletContext().getRealPath("/" + param));
 		}
 
 		if(!result.exists())
