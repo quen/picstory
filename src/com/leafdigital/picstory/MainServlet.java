@@ -82,7 +82,8 @@ public class MainServlet extends HttpServlet
 		{
 			throw new ServletException(e);
 		}
-		story = new StoryHandler(this, cacheRoot, storyRoot);
+		story = new StoryHandler(this, cacheRoot, storyRoot,
+			Integer.parseInt(getParameter("max-resize-threads")));
 		templates = new TemplateManager(
 			getFolderParameter("template-folder"), resource);
 		siteName = getParameter("site-name");
@@ -91,6 +92,12 @@ public class MainServlet extends HttpServlet
 		storyFinalXhtml = getParameter("story-final");
 	}
 
+	/**
+	 * Gets parameter.
+	 * @param name Parameter name
+	 * @return Parameter value
+	 * @throws ServletException If not found
+	 */
 	private String getParameter(String name) throws ServletException
 	{
 		String param = getServletConfig().getInitParameter(name);

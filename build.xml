@@ -4,7 +4,7 @@
 	   Builds picstory.
 	</description>
 	
-	<property name="version" value="2.03"/>
+	<property name="version" value="2.05"/>
 	
 	<!-- Temporary build folder (will be created/erased) -->
   <property name="build" location="${java.io.tmpdir}/picstory.build"/>

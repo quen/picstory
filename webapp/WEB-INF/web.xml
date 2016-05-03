@@ -61,6 +61,12 @@
  		  <param-name>resource-folder</param-name>
  		  <param-value>RESOURCE</param-value>
  		</init-param>
+ 		<init-param>
+ 		  <description>Maximum number of simultaneous image resize operations. Set lower
+ 		    to reduce memory consumption</description>
+ 		  <param-name>max-resize-threads</param-name>
+ 		  <param-value>8</param-value>
+ 		</init-param>
 	</servlet>  
 
 	<servlet-mapping>

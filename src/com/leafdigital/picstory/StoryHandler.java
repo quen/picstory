@@ -21,6 +21,7 @@ package com.leafdigital.picstory;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.concurrent.Semaphore;
 
 import javax.imageio.*;
 import javax.imageio.stream.FileImageOutputStream;
@@ -35,6 +36,8 @@ public class StoryHandler extends RequestHandler
 	private final static int BUFFER_SIZE = 64 * 1024;
 
 	private File cacheRoot, storyRoot;
+
+	private Semaphore resizeSemaphore;
 
 	private static enum Size
 	{
@@ -66,14 +69,17 @@ public class StoryHandler extends RequestHandler
 	 * @param mainServlet Main servlet
 	 * @param cacheRoot Root folder for cache
 	 * @param storyRoot Root folder for stories
+	 * @param resizeThreads Max number of simultaneous image resizes
 	 * @throws ServletException Any error constructing standard objects
 	 */
-	public StoryHandler(MainServlet mainServlet, File cacheRoot, File storyRoot)
+	public StoryHandler(MainServlet mainServlet, File cacheRoot, File storyRoot,
+		int resizeThreads)
 		throws ServletException
 	{
 		super(mainServlet);
 		this.cacheRoot = cacheRoot;
 		this.storyRoot = storyRoot;
+		resizeSemaphore = new Semaphore(resizeThreads);
 	}
 
 	/**
@@ -230,6 +236,8 @@ public class StoryHandler extends RequestHandler
 			{
 				try
 				{
+					resizeSemaphore.acquire();
+
 					// Original file
 					File original = new File(new File(storyRoot, storyName),
 						pic.getFilename() + ".jpg");
@@ -258,6 +266,7 @@ public class StoryHandler extends RequestHandler
 					{
 						Image scaled = image.getScaledInstance(newWidth, newHeight,
 							Image.SCALE_AREA_AVERAGING);
+						image = null;
 						image = new BufferedImage(newWidth, newHeight,
 							BufferedImage.TYPE_INT_RGB);
 						image.getGraphics().drawImage(scaled, 0, 0, null);
@@ -288,6 +297,10 @@ public class StoryHandler extends RequestHandler
 				{
 					throw new InternalException(
 						"Error processing file " + cache.getName(), e);
+				}
+				finally
+				{
+					resizeSemaphore.release();
 				}
 			}
 		}
