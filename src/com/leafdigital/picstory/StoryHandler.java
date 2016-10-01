@@ -21,6 +21,7 @@ package com.leafdigital.picstory;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import javax.imageio.*;
@@ -128,6 +129,27 @@ public class StoryHandler extends RequestHandler
 		{
 			files = new File[0];
 		}
+
+		Arrays.sort(files, new Comparator<File>()
+		{
+			@Override
+			public int compare(File o1, File o2)
+			{
+				long diff = o1.lastModified() - o2.lastModified();
+				if (diff < 0)
+				{
+					return -1;
+				}
+				else if(diff > 0)
+				{
+					return 1;
+				}
+				else
+				{
+					return o1.getName().compareTo(o2.getName());
+				}
+			}
+		});
 
 		// Create index file that contains all these
 	  StringBuilder out = new StringBuilder();
